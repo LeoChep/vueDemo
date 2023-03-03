@@ -1,0 +1,12 @@
+{
+    "dices": {
+        "d4": "d4.5f4a6b12.glb",
+        "d6": "d6.01277ab0.glb",
+        "d8": "d8.aef4e07e.glb",
+        "d10": "d10.75162417.glb",
+        "d12": "d12.0acb683a.glb",
+        "d20": "d20.8be40bdc.glb",
+        "d100": "d100.f247533e.glb"
+    },
+    "texture": "albedo.0940cfaf.jpg"
+}
