@@ -24,7 +24,7 @@ const createScene = async function (engine: BABYLON.Engine) {
 
   const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
   groundMat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-  groundMat.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+  groundMat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
   groundMat.backFaceCulling = false;
   ground.material = groundMat;
   ground.receiveShadows = true;

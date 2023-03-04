@@ -38,7 +38,7 @@ const loadDiceMesh = async (scene: Scene) => {
       scene
     ); //默认加载到最后一个创建的scene
     const box = scene.getMeshByName(k) as Mesh;
-    console.log(box);
+    // console.log(box);
     // box.parent = null;
     box.isVisible = false;
     //box = BABYLON.MeshBuilder.CreateBox("Box", { size: 3 }, scene);
@@ -73,12 +73,13 @@ const createDice = async (scene: Scene, name: string) => {
 
   if (instance.metadata === null) instance.metadata = {};
   instance.metadata.type = "dice";
-  window.console.log(scene);
+  //window.console.log(scene);
   return instance;
 };
 const rollDiceIns = async (instance: InstancedMesh) => {
+  console.log(instance);
   instance.position.y = 2;
-
+  instance.metadata.rollNum = 0;
   instance.addRotation(
     360 * Math.random() - 180,
     360 * Math.random() - 180,
@@ -104,7 +105,7 @@ const rollDiceIns = async (instance: InstancedMesh) => {
         // this will check if we need to break before the timeout has reached
         return scene.isDisposed;
       },
-      onEnded: (data) => {
+      onEnded: async (data) => {
         let stopFlag = true;
         const velocity = ins?.physicsImpostor?.getAngularVelocity() as Vector3;
         velocity.x = Math.abs(velocity.x % Math.PI);
@@ -129,6 +130,17 @@ const rollDiceIns = async (instance: InstancedMesh) => {
         } else {
           stopCount++;
         }
+        const items = ins.getChildren() as AbstractMesh[];
+        let higher = items[0] as AbstractMesh;
+        for (const item of items) {
+          if (item.getAbsolutePosition().y > higher.getAbsolutePosition().y) {
+            higher = item;
+          }
+        }
+        rollnum = translateValue(higher.name);
+        if (ins.metadata["rollNum"] !== rollnum) {
+          ins.metadata["rollNum"] = rollnum;
+        }
 
         if (stopCount <= 2) {
           loop(scene, ins, stopCount, resolve);
@@ -149,13 +161,17 @@ const rollDiceIns = async (instance: InstancedMesh) => {
   const awaitRoll = new Promise<string>((resolve) => {
     loop(instance.getScene(), instance, 0, resolve);
   });
-  let rollnum = 0;
+  let rollnum: number | null = null;
   await awaitRoll.then((result) => {
-    const patt1 = /[_]\d+/g;
-    const matchStr = result.match(patt1);
-    if (matchStr !== null) rollnum = parseInt(matchStr[0].replace("_", ""));
+    rollnum = translateValue(result);
   });
+  return rollnum as number | null;
+};
+const translateValue = (str: string) => {
+  let rollnum: number | null = null;
+  const patt1 = /[_]\d+/g;
+  const matchStr = str.match(patt1);
+  if (matchStr !== null) rollnum = parseInt(matchStr[0].replace("_", ""));
   return rollnum;
 };
-
 export { loadDiceMesh, createDice, rollDiceIns };
