@@ -9,6 +9,9 @@ import {
 } from "@/dices/diceTable";
 import type { Dice, DicesPlugin } from "@/dices/roller";
 class DiceTrayDice implements Dice {
+  getResultValue = async () => {
+    return await this.resultValue;
+  };
   mesh!: InstancedMesh;
   value!: number;
   getValue() {
@@ -43,7 +46,7 @@ class DiceTrayPlugin implements DicesPlugin {
     light.position = new BABYLON.Vector3(0, 80, 0);
     await loadDiceMesh(scene);
     engine.runRenderLoop(async function () {
-      (await scene).render();
+      scene.render();
     });
 
     // 监听浏览器改变大小的事件，通过调用engine.resize()来自适应窗口大小
@@ -58,6 +61,9 @@ class DiceTrayPlugin implements DicesPlugin {
     dice.mesh = diceMesh;
     dice.value = 0;
     dice.resultValue = resultValue;
+    dice.resultValue.then((result) => {
+      dice.value = result;
+    });
     return dice;
   };
 }

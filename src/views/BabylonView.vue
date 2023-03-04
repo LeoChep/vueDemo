@@ -1,64 +1,48 @@
 <template>
   <div id="diceTray">
     result: {{ result }}
-    <div class="dice_button">
-      {{ diceNum["d4"] }}
-      <button @click="addDice('d4')">d4</button>
+    <div class="buttons">
+      <div class="dice_button">
+        <p v-if="diceNum['d4'] > 0">{{ diceNum["d4"] }}</p>
+        <button @click="addDice('d4')">d4</button>
+      </div>
+      <div class="dice_button">
+        <p v-if="diceNum['d6'] > 0">{{ diceNum["d6"] }}</p>
+        <button @click="addDice('d6')">d6</button>
+      </div>
+      <div class="dice_button">
+        <p v-if="diceNum['d8'] > 0">{{ diceNum["d8"] }}</p>
+        <button @click="addDice('d8')">d8</button>
+      </div>
+      <div class="dice_button">
+        <p v-if="diceNum['d10'] > 0">{{ diceNum["d10"] }}</p>
+        <button @click="addDice('d10')">d10</button>
+      </div>
+      <div class="dice_button">
+        <p v-if="diceNum['d12'] > 0">{{ diceNum["d12"] }}</p>
+        <button @click="addDice('d12')">d12</button>
+      </div>
+      <div class="dice_button">
+        <p v-if="diceNum['d20'] > 0">{{ diceNum["d20"] }}</p>
+        <button @click="addDice('d20')">d20</button>
+      </div>
+      <div class="dice_button">
+        <p v-if="diceNum['d100'] > 0">{{ diceNum["d100"] }}</p>
+        <button @click="addDice('d100')">d100</button>
+      </div>
+      <button @click="rollDices()">roll</button>
+      <button @click="cleanDicesClick()">clean</button>
     </div>
-    <div class="dice_button">
-      {{ diceNum["d6"] }}
-      <button @click="addDice('d6')">d6</button>
-    </div>
-    <div class="dice_button">
-      {{ diceNum["d8"] }}
-      <button @click="addDice('d8')">d8</button>
-    </div>
-    <div class="dice_button">
-      {{ diceNum["d10"] }}
-      <button @click="addDice('d10')">d10</button>
-    </div>
-    <div class="dice_button">
-      {{ diceNum["d12"] }}
-      <button @click="addDice('d12')">d12</button>
-    </div>
-    <div class="dice_button">
-      {{ diceNum["d20"] }}
-      <button @click="addDice('d20')">d20</button>
-    </div>
-    <div class="dice_button">
-      {{ diceNum["d100"] }}
-      <button @click="addDice('d100')">d100</button>
-    </div>
-    <button @click="rollDices()">roll</button>
-    <button @click="cleanDicesClick()">clean</button>
     <canvas id="renderCanvas" touch-action="none"></canvas>
     //touch-action="none" for best results from PEP
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, inject } from "vue";
-import * as BABYLON from "@babylonjs/core/Legacy/legacy";
+import { ref, onMounted } from "vue";
 import "@babylonjs/loaders";
-import type { AbstractMesh } from "@babylonjs/core/Legacy/legacy";
-import { bonesVertex } from "@babylonjs/core/Shaders/ShadersInclude/bonesVertex";
-import {
-  InstancedMesh,
-  Material,
-  Mesh,
-  PhysicsImpostor,
-  Scene,
-  Vector3,
-} from "@babylonjs/core";
 import { DiceTrayPlugin } from "@/DiceTrayPlugin/DiceTrayPlugin";
 import "@babylonjs/procedural-textures";
-import {
-  createScene as createDiceTable,
-  cleanDiceTable,
-} from "@/dices/diceTable";
-import { createDice, loadDiceMesh, rollDiceIns } from "@/dices/dice";
 import { Roller } from "@/dices/roller";
-import { computed } from "vue";
-
 const result = ref(0);
 
 let rollDices = async () => {
@@ -81,21 +65,20 @@ onMounted(async () => {
   //使用DiceTray插件
   const diceTrayPlugin = new DiceTrayPlugin();
   await diceTrayPlugin.createDiceTray(canvas);
-  const roller = new Roller(diceTrayPlugin);
 
-  const roolDice = async (type: string) => {
-    const dice = await roller.roll(type);
-    result.value = await dice.resultValue;
-    return dice;
-  };
+  // const roolDice = async (type: string) => {
+  //   const dice = await roller.roll(type);
+  //   result.value = await dice.resultValue;
+  //   return dice;
+  // };
   rollDices = async () => {
+    const roller = new Roller(diceTrayPlugin);
     Object.keys(diceNum.value).forEach(async (type) => {
-      const dices = await roller.rollndx(diceNum.value[type], type);
-      for (let dice of dices) {
-        dice.resultValue.then((resultValue) => {
-          result.value = result.value + resultValue;
-        });
-      }
+      roller.rollndx(diceNum.value[type], type);
+      result.value = result.value + (await roller.getResult()).resultValue;
+    });
+    Object.keys(diceNum.value).forEach(async (type) => {
+      diceNum.value[type] = 0;
     });
   };
   cleanDicesClick = async () => {
@@ -126,6 +109,7 @@ body {
 
 .dice_button p {
   display: block;
+  text-align: center;
 }
 
 #renderCanvas {
