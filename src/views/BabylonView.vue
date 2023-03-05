@@ -43,6 +43,7 @@ import "@babylonjs/loaders";
 import { DiceTrayPlugin } from "@/DiceTrayPlugin/DiceTrayPlugin";
 import "@babylonjs/procedural-textures";
 import { Roller } from "@/dices/roller";
+import { subscribe } from "@/tools/SubscribeMan";
 const result = ref(0);
 
 let rollDices = async () => {
@@ -72,10 +73,16 @@ onMounted(async () => {
   //   return dice;
   // };
   rollDices = async () => {
-    const roller = new Roller(diceTrayPlugin);
+    let roller = new Roller(diceTrayPlugin);
+    roller.hook = roller;
+    let singleNum = 0;
     Object.keys(diceNum.value).forEach(async (type) => {
       roller.rollndx(diceNum.value[type], type);
-      result.value = result.value + (await roller.getResult()).resultValue;
+    });
+    roller = subscribe(roller, "value", () => {
+      result.value = result.value - singleNum;
+      singleNum = roller.hook.value;
+      result.value = result.value + singleNum;
     });
     Object.keys(diceNum.value).forEach(async (type) => {
       diceNum.value[type] = 0;

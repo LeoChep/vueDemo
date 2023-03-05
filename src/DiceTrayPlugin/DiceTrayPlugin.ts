@@ -13,6 +13,7 @@ class DiceTrayDice implements Dice {
   };
   mesh!: InstancedMesh;
   value!: number;
+  hook: any;
   getValue() {
     return this.value;
   }
@@ -59,12 +60,14 @@ class DiceTrayPlugin implements DicesPlugin {
     const dice = new DiceTrayDice();
     dice.mesh = diceMesh;
     dice.value = 0;
+    dice.hook = dice;
     diceMesh.metadata = subscribe(diceMesh.metadata, "rollNum", () => {
-      dice.value = diceMesh.metadata.rollNum;
+      console.log("change");
+      dice.hook.value = diceMesh.metadata.rollNum;
     });
     dice.resultValue = resultValue as Promise<number>;
     dice.resultValue.then((result) => {
-      dice.value = result;
+      dice.hook.value = result;
     });
 
     return dice;

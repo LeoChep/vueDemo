@@ -1,3 +1,5 @@
+import { subscribe } from "@/tools/SubscribeMan";
+
 interface DicesPlugin {
   roll: (diceType: string) => Promise<Dice>;
   cleanDices();
@@ -11,11 +13,24 @@ interface Dice {
 }
 export default {};
 class Roller {
-  dices = [] as Promise<Dice>[];
+  hook: any;
+  dices = [] as (Promise<Dice> | Dice)[];
+  value = 0;
   //根据骰子类型就行异步投掷，返回结果
-  roll(diceType: string): Promise<Dice> {
-    const dice = this.dicesPlugin.roll(diceType);
-    this.dices.push(dice);
+  async roll(diceType: string): Promise<Dice> {
+    let dice = await this.dicesPlugin.roll(diceType);
+    dice = subscribe(dice, "value", async () => {
+      let totalRollValue = 0;
+
+      for (const item of this.dices) {
+        totalRollValue += (await item).getValue();
+      }
+      if (this.hook.value !== totalRollValue) {
+        this.hook.value = totalRollValue;
+      }
+      console.log(this.hook.value);
+    });
+    this.hook.dices.push(dice);
     return dice;
   }
   //异步投掷多个
@@ -23,7 +38,6 @@ class Roller {
     for (let i = 0; i < n; i++) {
       this.roll(x);
     }
-
     return Promise.all(this.dices);
   };
   getResult = async () => {
