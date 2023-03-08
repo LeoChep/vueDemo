@@ -6,6 +6,7 @@ interface DicesPlugin {
 }
 interface Dice {
   //异步类
+  diceType: string;
   resultValue: Promise<number>; //结果数值
   value: number; //当前数值
   getValue: () => number;
@@ -13,7 +14,7 @@ interface Dice {
 }
 export default {};
 class Roller {
-  hook: any;
+  proxy: any;
   dices = [] as (Promise<Dice> | Dice)[];
   value = 0;
   //根据骰子类型就行异步投掷，返回结果
@@ -21,16 +22,15 @@ class Roller {
     let dice = await this.dicesPlugin.roll(diceType);
     dice = subscribe(dice, "value", async () => {
       let totalRollValue = 0;
-
       for (const item of this.dices) {
         totalRollValue += (await item).getValue();
       }
-      if (this.hook.value !== totalRollValue) {
-        this.hook.value = totalRollValue;
+      if (this.proxy.value !== totalRollValue) {
+        this.proxy.value = totalRollValue;
       }
-      console.log(this.hook.value);
+      console.log(this.proxy.value);
     });
-    this.hook.dices.push(dice);
+    this.proxy.dices.push(dice);
     return dice;
   }
   //异步投掷多个
@@ -59,6 +59,15 @@ class Roller {
     };
     return result;
   };
+  async toString() {
+    let des = this.value + "";
+    for (const item of this.dices) {
+      const itemIns = await item;
+      des += `,` + itemIns.value;
+    }
+    des = des.replace(",", "[") + `]`;
+    return des;
+  }
   // //异步投掷，并选取其中一定数量
   // rollndxKy = async (
   //   n: number,

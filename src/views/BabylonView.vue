@@ -1,6 +1,6 @@
 <template>
   <div id="diceTray">
-    result: {{ result }}
+    result: {{ resultDetail }}
     <div class="buttons">
       <div class="dice_button">
         <p v-if="diceNum['d4'] > 0">{{ diceNum["d4"] }}</p>
@@ -42,9 +42,10 @@ import { ref, onMounted } from "vue";
 import "@babylonjs/loaders";
 import { DiceTrayPlugin } from "@/DiceTrayPlugin/DiceTrayPlugin";
 import "@babylonjs/procedural-textures";
-import { Roller } from "@/dices/roller";
 import { subscribe } from "@/tools/SubscribeMan";
+import { Roller } from "@/dices/roller";
 const result = ref(0);
+const resultDetail = ref("");
 
 let rollDices = async () => {
   console.log("未加载方法");
@@ -72,17 +73,19 @@ onMounted(async () => {
   //   result.value = await dice.resultValue;
   //   return dice;
   // };
+  let roller = new Roller(diceTrayPlugin);
   rollDices = async () => {
-    let roller = new Roller(diceTrayPlugin);
-    roller.hook = roller;
+    roller.proxy = roller;
     let singleNum = 0;
     Object.keys(diceNum.value).forEach(async (type) => {
       roller.rollndx(diceNum.value[type], type);
     });
-    roller = subscribe(roller, "value", () => {
+    roller = subscribe(roller, "value", async () => {
+      const proxy = roller.proxy as Roller;
       result.value = result.value - singleNum;
-      singleNum = roller.hook.value;
+      singleNum = proxy.value;
       result.value = result.value + singleNum;
+      resultDetail.value = await proxy.toString();
     });
     Object.keys(diceNum.value).forEach(async (type) => {
       diceNum.value[type] = 0;
@@ -94,6 +97,8 @@ onMounted(async () => {
     Object.keys(diceNum.value).forEach(async (type) => {
       diceNum.value[type] = 0;
     });
+    resultDetail.value = "";
+    roller = new Roller(diceTrayPlugin);
   };
 });
 </script>

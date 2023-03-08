@@ -8,12 +8,13 @@ import {
 import type { Dice, DicesPlugin } from "@/dices/roller";
 import { subscribe } from "@/tools/SubscribeMan";
 class DiceTrayDice implements Dice {
+  diceType = "";
   getResultValue = async () => {
     return await this.resultValue;
   };
   mesh!: InstancedMesh;
   value!: number;
-  hook: any;
+  proxy: any;
   getValue() {
     return this.value;
   }
@@ -55,19 +56,19 @@ class DiceTrayPlugin implements DicesPlugin {
   }
   roll = async (diceType: string) => {
     const diceMesh = await createDice(this.scene, diceType);
-
     const resultValue = rollDiceIns(diceMesh);
     const dice = new DiceTrayDice();
+    dice.diceType = diceType;
     dice.mesh = diceMesh;
     dice.value = 0;
-    dice.hook = dice;
+    dice.proxy = dice;
     diceMesh.metadata = subscribe(diceMesh.metadata, "rollNum", () => {
       console.log("change");
-      dice.hook.value = diceMesh.metadata.rollNum;
+      dice.proxy.value = diceMesh.metadata.rollNum;
     });
     dice.resultValue = resultValue as Promise<number>;
     dice.resultValue.then((result) => {
-      dice.hook.value = result;
+      dice.proxy.value = result;
     });
 
     return dice;

@@ -8,7 +8,7 @@ const subscribe = (targetObj: any, key: any, f: Function) => {
       return true;
     },
   });
-  targetObj.hook = proxy;
+  targetObj.proxy = proxy;
   return proxy;
 };
 export { subscribe };
