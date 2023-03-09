@@ -1,13 +1,22 @@
 {
   "extends": "./tsconfig.app.json",
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "build/**/*"],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build/**/*"
+  ],
   "compilerOptions": {
     "allowJs": true,
     "noImplicitAny": false,
     "composite": true,
     "outDir": "src",
     "lib": [],
-    "types": ["node", "jsdom"]
+    "types": [
+      "node",
+      "jsdom",
+      "vite/client"
+    ]
   }
 }

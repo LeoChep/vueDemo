@@ -12,4 +12,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
   },
+  rules: {
+    "vue/comment-directive": 0,
+  },
 };
