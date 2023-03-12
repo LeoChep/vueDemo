@@ -33,6 +33,10 @@
       <button @click="rollDices()">roll</button>
       <button @click="cleanDicesClick()">clean</button>
     </div>
+    <input v-model="dicesFormula" placeholder="edit me" />
+    <div class="dice_button">
+      <button @click="rollCommand()">roll</button>
+    </div>
     <canvas id="renderCanvas" touch-action="none"></canvas>
     //touch-action="none" for best results from PEP
   </div>
@@ -44,9 +48,18 @@ import { DiceTrayPlugin } from "@/DiceTrayPlugin/DiceTrayPlugin";
 import "@babylonjs/procedural-textures";
 import { subscribe } from "@/tools/SubscribeMan";
 import { Roller } from "@/dices/roller";
+import "@/dices/DiceFormulaTrans";
+import {
+  DiceFormula,
+  Formula,
+  parseDiceFormula,
+} from "@/dices/DiceFormulaTrans";
 const result = ref(0);
 const resultDetail = ref("");
-
+const dicesFormula = ref("");
+let rollCommand = async () => {
+  console.log("未加载方法");
+};
 let rollDices = async () => {
   console.log("未加载方法");
 };
@@ -85,7 +98,7 @@ onMounted(async () => {
       result.value = result.value - singleNum;
       singleNum = proxy.value;
       result.value = result.value + singleNum;
-      resultDetail.value = await proxy.toString();
+      resultDetail.value = proxy.toString();
     });
     Object.keys(diceNum.value).forEach(async (type) => {
       diceNum.value[type] = 0;
@@ -99,6 +112,23 @@ onMounted(async () => {
     });
     resultDetail.value = "";
     roller = new Roller(diceTrayPlugin);
+  };
+  rollCommand = async () => {
+    const formulaNode = new Formula();
+    const formulas = parseDiceFormula(dicesFormula.value);
+    formulaNode.children = formulas;
+    const rollDice = (formula: Formula) => {
+      for (const formulaItem of formula.children) {
+        if (formulaItem.type === "formula") rollDice(formulaItem);
+        if (formulaItem.type === "diceFormula") {
+          const diceFormulaItem = formulaItem as DiceFormula;
+          diceFormulaItem.diceRoller = new Roller(diceTrayPlugin);
+          const diceRoller = diceFormulaItem.diceRoller as Roller;
+          diceRoller.rollXdY(formulaItem.text);
+        }
+      }
+    };
+    rollDice(formulaNode);
   };
 });
 </script>
