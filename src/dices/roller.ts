@@ -17,7 +17,7 @@ class Roller {
   proxy: any;
   dices = [] as (Promise<Dice> | Dice)[];
   value = 0;
-  //根据骰子类型就行异步投掷，返回结果
+  //根据骰子类型就行异步投掷，返回生成的骰子
   async roll(diceType: string): Promise<Dice> {
     let dice = await this.dicesPlugin.roll(diceType);
     dice = subscribe(dice, "value", async () => {
@@ -40,6 +40,18 @@ class Roller {
     }
     return Promise.all(this.dices);
   };
+  //t通过指令投掷
+  rollXdY = async (xdy: string) => {
+    const regex = /(\d*)d(\d+)/g;
+    const matches = xdy.matchAll(regex);
+    const dices = Array.from(matches, (match) => {
+      const count = match[1] === "" ? 1 : parseInt(match[1]);
+      const sides = parseInt(match[2]);
+
+      return this.rollndx(count, "d" + sides);
+    });
+    return Promise.all(dices);
+  };
   getResult = async () => {
     await Promise.all(this.dices);
     const resultValueList = [] as Promise<number>[];
@@ -59,10 +71,11 @@ class Roller {
     };
     return result;
   };
-  async toString() {
+
+  toString() {
     let des = this.value + "";
     for (const item of this.dices) {
-      const itemIns = await item;
+      const itemIns = item as Dice;
       des += `,` + itemIns.value;
     }
     des = des.replace(",", "[") + `]`;
@@ -96,6 +109,7 @@ class Roller {
   // };
   dicesPlugin!: DicesPlugin;
   constructor(dicesplugin: DicesPlugin) {
+    this.proxy = this;
     this.dicesPlugin = dicesplugin;
   }
 }
