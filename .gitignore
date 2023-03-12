@@ -19,7 +19,6 @@ coverage
 
 # Editor directories and files
 .vscode/*
-testGround/*
 !.vscode/extensions.json
 .idea
 *.suo
@@ -27,4 +26,3 @@ testGround/*
 *.njsproj
 *.sln
 *.sw?
-.gitignore

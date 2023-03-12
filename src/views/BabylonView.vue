@@ -114,7 +114,6 @@ onMounted(async () => {
     roller = new Roller(diceTrayPlugin);
   };
   rollCommand = async () => {
-    diceTrayPlugin.cleanDices();
     const formulaNode = new Formula();
     const formulas = parseDiceFormula(dicesFormula.value);
     formulaNode.children = formulas;
