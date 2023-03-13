@@ -44,10 +44,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import "@babylonjs/loaders";
-import { DiceTrayPlugin } from "@/DiceTrayPlugin/DiceTrayPlugin";
+import { DiceTrayPlugin } from "@/diceTrayPluginMoudle/DiceTrayPlugin";
 import "@babylonjs/procedural-textures";
 import { subscribe } from "@/tools/SubscribeMan";
-import { Roller } from "@/dices/roller";
+import { Roller } from "@/dices/rollerMoudle";
 import "@/dices/DiceFormulaTrans";
 import {
   DiceFormula,

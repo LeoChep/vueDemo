@@ -1,11 +1,15 @@
 import { InstancedMesh, Mesh, Vector3, type Scene } from "@babylonjs/core";
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
-import { createDice, loadDiceMesh, rollDiceIns } from "@/dices/dice";
+import {
+  createDice,
+  loadDiceMesh,
+  rollDiceIns,
+} from "@/diceTrayPluginMoudle/ammoDiceMoudle";
 import {
   createScene as createDiceTable,
   cleanDiceTable,
-} from "@/dices/diceTable";
-import type { Dice, DicesPlugin } from "@/dices/roller";
+} from "@/diceTrayPluginMoudle/diceTableMoudle";
+import type { Dice, DicesPlugin } from "@/dices/rollerMoudle";
 import { subscribe } from "@/tools/SubscribeMan";
 class DiceTrayDice implements Dice {
   diceType = "";
