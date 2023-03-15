@@ -28,7 +28,7 @@ class Roller {
       if (this.proxy.value !== totalRollValue) {
         this.proxy.value = totalRollValue;
       }
-      console.log(this.proxy.value);
+      //  console.log(this.proxy.value);
     });
     this.proxy.dices.push(dice);
     return dice;
@@ -36,7 +36,9 @@ class Roller {
   //异步投掷多个
   rollndx = async (n: number, x: string) => {
     for (let i = 0; i < n; i++) {
-      this.roll(x);
+      setTimeout(() => {
+        this.roll(x);
+      }, 50 * i);
     }
     return Promise.all(this.dices);
   };
@@ -51,6 +53,9 @@ class Roller {
       return this.rollndx(count, "d" + sides);
     });
     return Promise.all(dices);
+  };
+  getValue = () => {
+    return this.value;
   };
   getResult = async () => {
     await Promise.all(this.dices);

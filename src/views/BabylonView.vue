@@ -115,16 +115,18 @@ onMounted(async () => {
   };
   rollCommand = async () => {
     diceTrayPlugin.cleanDices();
-    const formulaNode = new Formula();
-    const formulas = parseDiceFormula(dicesFormula.value);
-    formulaNode.children = formulas;
+    const formulaNode = parseDiceFormula(dicesFormula.value);
     const rollDice = (formula: Formula) => {
       for (const formulaItem of formula.children) {
         if (formulaItem.type === "formula") rollDice(formulaItem);
         if (formulaItem.type === "diceFormula") {
           const diceFormulaItem = formulaItem as DiceFormula;
           diceFormulaItem.diceRoller = new Roller(diceTrayPlugin);
-          const diceRoller = diceFormulaItem.diceRoller as Roller;
+          let diceRoller = diceFormulaItem.diceRoller as Roller;
+          diceRoller = subscribe(diceRoller, "value", () => {
+            resultDetail.value =
+              formulaNode.toString() + "=" + formulaNode.getValue();
+          });
           diceRoller.rollXdY(formulaItem.text);
         }
       }

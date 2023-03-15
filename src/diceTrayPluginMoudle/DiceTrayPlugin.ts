@@ -35,7 +35,7 @@ class DiceTrayPlugin implements DicesPlugin {
     //创建引擎
     const engine = new BABYLON.Engine(canvas as HTMLCanvasElement, true, {
       deterministicLockstep: true,
-      lockstepMaxSteps: 4,
+      lockstepMaxSteps: 60,
     });
     //生成Scene
     const scene = await createDiceTable(engine);
@@ -67,7 +67,7 @@ class DiceTrayPlugin implements DicesPlugin {
     dice.value = 0;
     dice.proxy = dice;
     diceMesh.metadata = subscribe(diceMesh.metadata, "rollNum", () => {
-      console.log("change");
+      // console.log("change");
       dice.proxy.value = diceMesh.metadata.rollNum;
     });
     dice.resultValue = resultValue as Promise<number>;

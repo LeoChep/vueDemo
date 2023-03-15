@@ -77,8 +77,8 @@ const createDice = async (scene: Scene, name: string) => {
   return instance;
 };
 const rollDiceIns = async (instance: InstancedMesh) => {
-  console.log(instance);
-  instance.position.y = 2;
+  // console.log(instance);
+  instance.position.y = Math.random() * 5 + 2;
   instance.metadata.rollNum = 0;
   instance.addRotation(
     360 * Math.random() - 180,
@@ -103,14 +103,15 @@ const rollDiceIns = async (instance: InstancedMesh) => {
       contextObservable: scene.onBeforeRenderObservable,
       breakCondition: () => {
         // this will check if we need to break before the timeout has reached
-        return scene.isDisposed;
+        return scene.isDisposed || ins.isDisposed();
       },
       onEnded: async (data) => {
         let stopFlag = true;
         const velocity = ins?.physicsImpostor?.getAngularVelocity() as Vector3;
-        velocity.x = Math.abs(velocity.x % Math.PI);
-        velocity.y = Math.abs(velocity.y % Math.PI);
-        velocity.z = Math.abs(velocity.z % Math.PI);
+        console.log(velocity);
+        velocity._x = Math.abs(velocity._x % Math.PI);
+        velocity._y = Math.abs(velocity._y % Math.PI);
+        velocity._z = Math.abs(velocity._z % Math.PI);
         const lineVelocity = ins
           ?.getPhysicsImpostor()
           ?.getLinearVelocity() as Vector3;
