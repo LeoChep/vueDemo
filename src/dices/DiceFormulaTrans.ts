@@ -1,5 +1,3 @@
-import type { Roller } from "./rollerMoudle";
-
 const str = "(1d7+(2d6+2d8)*2)+2d6+1d6+4";
 interface DiceRoller {
   toString: () => string;

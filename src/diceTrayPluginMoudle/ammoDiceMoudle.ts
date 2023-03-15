@@ -1,10 +1,8 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 import "@babylonjs/loaders";
 import type { AbstractMesh } from "@babylonjs/core/Legacy/legacy";
-import { bonesVertex } from "@babylonjs/core/Shaders/ShadersInclude/bonesVertex";
 import {
   InstancedMesh,
-  Material,
   Mesh,
   PhysicsImpostor,
   Scene,
@@ -105,7 +103,7 @@ const rollDiceIns = async (instance: InstancedMesh) => {
         // this will check if we need to break before the timeout has reached
         return scene.isDisposed || ins.isDisposed();
       },
-      onEnded: async (data) => {
+      onEnded: async () => {
         let stopFlag = true;
         const velocity = ins?.physicsImpostor?.getAngularVelocity() as Vector3;
         console.log(velocity);

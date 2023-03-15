@@ -1,4 +1,4 @@
-import { InstancedMesh, Mesh, Vector3, type Scene } from "@babylonjs/core";
+import { InstancedMesh, Vector3, type Scene } from "@babylonjs/core";
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 import {
   createDice,
@@ -43,11 +43,8 @@ class DiceTrayPlugin implements DicesPlugin {
     const camera = new BABYLON.TargetCamera("camera", new Vector3(0, 20, 0));
     camera.setTarget(new Vector3(0, 0, 0));
     camera.attachControl(engine.getRenderingCanvas(), true);
-    const light = new BABYLON.PointLight(
-      "pointLight",
-      new BABYLON.Vector3(0, 20, 40),
-      scene
-    );
+    //const light =
+    new BABYLON.PointLight("pointLight", new BABYLON.Vector3(0, 20, 40), scene);
     await loadDiceMesh(scene);
     engine.runRenderLoop(async function () {
       scene.render();
