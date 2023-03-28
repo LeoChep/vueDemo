@@ -4,6 +4,8 @@ interface DiceRoller {
   getValue: () => number;
 }
 class Formula {
+  //公式类，组合模式，子元素为其子类骰子公式对象和操作符号对象、定值对象
+  //和公式对象，用于描述一个公式的各个组成部分，其中()包含的公式子对象会被递归解析
   type = "formula";
   text!: string;
   children = [] as Formula[];
@@ -16,19 +18,25 @@ class Formula {
     }
     return result;
   };
+  /*
+  获取公式的值（实时运算）
+  */
   getValue = () => {
     let result = 0;
+    //定义一个栈，用于存放公式的子对象
     const stock = [] as (number | string)[];
     let top = 0;
     let index = 0;
     while (index < this.children.length) {
+      //优先处理每个子项的值，递归求值
       if (this.children[index].type != "opearator")
         stock.push(this.children[index].getValue());
       else stock.push(this.children[index].text);
-      if (stock[top - 1] === "*") {
-        // console.log((stock[top - 2] as number) + "*" + stock[top]);
-        stock[top - 2] = (stock[top - 2] as number) * (stock[top] as number);
 
+      //做乘除的运算判断，如果上一个子项是乘除，那么进行运算后将这两个出栈
+      //结果保存到被运算的栈对象中
+      if (stock[top - 1] === "*") {
+        stock[top - 2] = (stock[top - 2] as number) * (stock[top] as number);
         top -= 2;
         stock.pop();
         stock.pop();
@@ -44,6 +52,7 @@ class Formula {
     }
     index = 0;
     result = stock[0] as number;
+    //进行乘除之后，只剩下单线推进加减运算
     while (index < stock.length) {
       index++;
       if (stock[index - 1] === "+") {
@@ -106,7 +115,7 @@ const parseDiceFormula = (str: string) => {
       }
     }
   }
-  console.log(str);
+  //console.log(str);
   //寻找操作符
   raw = str;
   const ops = [] as string[];
@@ -144,7 +153,7 @@ const parseDiceFormula = (str: string) => {
       resultFormula.children.push(mod);
     }
     if (ops[opIndex] != null && ops[opIndex] != undefined) {
-      console.log(ops[opIndex]);
+      // console.log(ops[opIndex]);
       result.push(ops[opIndex]);
       const op = new Opearator();
       op.text = ops[opIndex];
@@ -156,6 +165,6 @@ const parseDiceFormula = (str: string) => {
   resultFormula.text = text;
   return resultFormula;
 };
-parseDiceFormula(str);
+
 export { Formula, parseDiceFormula, Opearator, DiceFormula };
 export type { DiceRoller };

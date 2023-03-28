@@ -1,8 +1,8 @@
-import { subscribe } from "@/tools/SubscribeMan";
+import { subscribe } from "@plugin/tool_modules/SubscribeMan/SubscribeMan";
 
 interface DicesPlugin {
   roll: (diceType: string) => Promise<Dice>;
-  cleanDices();
+  cleanDices: () => void;
 }
 interface Dice {
   //异步类

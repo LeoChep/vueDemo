@@ -5,17 +5,23 @@
     "src/**/*",
     "src/**/*.vue",
     "src/**/*.js",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "modules"
   ],
   "exclude": [
     "src/**/__tests__/*"
   ],
   "compilerOptions": {
     "composite": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "ScriptHost", "ESNext.AsyncIterable", "WebWorker"],
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./src/*",
+        "./modules/*"
+      ],
+      "@plugin/*":[
+        "./modules/*"
       ]
     }
   }

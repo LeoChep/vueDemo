@@ -44,16 +44,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import "@babylonjs/loaders";
-import { DiceTrayPlugin } from "@/diceTrayPluginMoudle/DiceTrayPlugin";
+import { DiceTrayPlugin } from "@plugin/dice_modules/diceTrayPluginMoudle/DiceTrayPlugin";
 import "@babylonjs/procedural-textures";
-import { subscribe } from "@/tools/SubscribeMan";
-import { Roller } from "@/dices/rollerMoudle";
-import "@/dices/DiceFormulaTrans";
+import { subscribe } from "@plugin/tool_modules/SubscribeMan/SubscribeMan";
+import { Roller } from "@plugin/dice_modules/dices/rollerMoudle";
 import {
   DiceFormula,
   Formula,
   parseDiceFormula,
-} from "@/dices/DiceFormulaTrans";
+} from "@plugin/dice_modules/dices/DiceFormulaTrans";
 const result = ref(0);
 const resultDetail = ref("");
 const dicesFormula = ref("");

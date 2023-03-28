@@ -14,11 +14,15 @@ import axios from "axios";
 // Dices
 //load mesh
 const loadDiceMesh = async (scene: Scene) => {
-  let dicesGlbMap;
-  await axios.get("asset/dices/diceGlb.json").then((response) => {
+  let dicesGlbMap: { [x: string]: { [x: string]: string } };
+  try {
+    const response = await axios.get("asset/dices/diceGlb.json");
     console.log(response.data);
     dicesGlbMap = response.data;
-  });
+  } catch (error) {
+    console.error("获取数据时出错：", error);
+    throw error;
+  }
   const materialWood = new BABYLON.StandardMaterial("wood", scene);
   materialWood.diffuseTexture = new BABYLON.Texture(
     "asset/dices/" + dicesGlbMap["texture"],
@@ -61,7 +65,6 @@ const createDice = async (scene: Scene, name: string) => {
     locator.name = child.name;
     instance.addChild(locator as AbstractMesh);
   }
-  // instance.translate(new Vector3(0, 1, 0), 2);
   instance.physicsImpostor = new PhysicsImpostor(
     instance,
     PhysicsImpostor.ConvexHullImpostor,
@@ -75,7 +78,6 @@ const createDice = async (scene: Scene, name: string) => {
   return instance;
 };
 const rollDiceIns = async (instance: InstancedMesh) => {
-  // console.log(instance);
   instance.position.y = Math.random() * 5 + 2;
   instance.metadata.rollNum = 0;
   instance.addRotation(
@@ -94,7 +96,10 @@ const rollDiceIns = async (instance: InstancedMesh) => {
     scene: Scene,
     ins: InstancedMesh,
     stopCount: number,
-    resolve
+    resolve: {
+      (value: string | PromiseLike<string>): void;
+      (arg0: string): void;
+    }
   ) => {
     BABYLON.setAndStartTimer({
       timeout: 300,

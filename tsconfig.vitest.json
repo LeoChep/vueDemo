@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.app.json",
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "modules/*"
   ],
   "exclude": [
     "node_modules",
@@ -12,7 +13,7 @@
     "noImplicitAny": false,
     "composite": true,
     "outDir": "src",
-    "lib": [],
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "ScriptHost", "ESNext.AsyncIterable", "WebWorker"],
     "types": [
       "node",
       "jsdom",

@@ -34,7 +34,7 @@
     "@babylonjs/serializers": "^5.47.0",
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/jsdom": "^20.0.1",
-    "@types/node": "^18.11.12",
+    "@types/node": "^18.15.10",
     "@types/three": "^0.149.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
