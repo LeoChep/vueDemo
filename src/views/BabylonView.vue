@@ -45,6 +45,7 @@
 import { ref, onMounted } from "vue";
 import "@babylonjs/loaders";
 import { DiceTrayPlugin } from "@plugin/dice_modules/diceTrayPluginMoudle/DiceTrayPlugin";
+import { MathDicePlugin } from "@plugin/dice_modules/mathDicePluginMoudle/MathDice";
 import "@babylonjs/procedural-textures";
 import { subscribe } from "@plugin/tool_modules/SubscribeMan/SubscribeMan";
 import { Roller } from "@plugin/dice_modules/dices/rollerMoudle";
@@ -53,6 +54,7 @@ import {
   Formula,
   parseDiceFormula,
 } from "@plugin/dice_modules/dices/DiceFormulaTrans";
+import { DiceCommander } from "@plugin/dice_modules/dices/commandMoudle/DiceCommander";
 const result = ref(0);
 const resultDetail = ref("");
 const dicesFormula = ref("");
@@ -79,13 +81,15 @@ onMounted(async () => {
   //使用DiceTray插件
   const diceTrayPlugin = new DiceTrayPlugin();
   await diceTrayPlugin.createDiceTray(canvas);
-
+  //使用MathDices插件
+  // const diceTrayPlugin = new MathDicePlugin();
   // const roolDice = async (type: string) => {
   //   const dice = await roller.roll(type);
   //   result.value = await dice.resultValue;
   //   return dice;
   // };
-  let roller = new Roller(diceTrayPlugin);
+  Roller.dicesplugin = diceTrayPlugin;
+  let roller = new Roller();
   rollDices = async () => {
     roller.proxy = roller;
     let singleNum = 0;
@@ -110,27 +114,29 @@ onMounted(async () => {
       diceNum.value[type] = 0;
     });
     resultDetail.value = "";
-    roller = new Roller(diceTrayPlugin);
+    roller = new Roller();
   };
+  const diceCommander = new DiceCommander();
   rollCommand = async () => {
-    diceTrayPlugin.cleanDices();
-    const formulaNode = parseDiceFormula(dicesFormula.value);
-    const rollDice = (formula: Formula) => {
-      for (const formulaItem of formula.children) {
-        if (formulaItem.type === "formula") rollDice(formulaItem);
-        if (formulaItem.type === "diceFormula") {
-          const diceFormulaItem = formulaItem as DiceFormula;
-          diceFormulaItem.diceRoller = new Roller(diceTrayPlugin);
-          let diceRoller = diceFormulaItem.diceRoller as Roller;
-          diceRoller = subscribe(diceRoller, "value", () => {
-            resultDetail.value =
-              formulaNode.toString() + "=" + formulaNode.getValue();
-          });
-          diceRoller.rollXdY(formulaItem.text);
-        }
-      }
-    };
-    rollDice(formulaNode);
+    // diceTrayPlugin.cleanDices();
+    diceCommander.excute(dicesFormula.value);
+    // const formulaNode = parseDiceFormula(dicesFormula.value);
+    // const rollDice = (formula: Formula) => {
+    //   for (const formulaItem of formula.children) {
+    //     if (formulaItem.type === "formula") rollDice(formulaItem);
+    //     if (formulaItem.type === "diceFormula") {
+    //       const diceFormulaItem = formulaItem as DiceFormula;
+    //       diceFormulaItem.diceRoller = new Roller();
+    //       let diceRoller = diceFormulaItem.diceRoller as Roller;
+    //       diceRoller = subscribe(diceRoller, "value", () => {
+    //         resultDetail.value =
+    //           formulaNode.toString() + "=" + formulaNode.getValue();
+    //       });
+    //       diceRoller.rollXdY(formulaItem.text);
+    //     }
+    //   }
+    // };
+    // rollDice(formulaNode);
   };
 });
 </script>
