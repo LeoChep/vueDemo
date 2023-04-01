@@ -102,7 +102,7 @@ const rollDiceIns = async (instance: InstancedMesh) => {
     }
   ) => {
     BABYLON.setAndStartTimer({
-      timeout: 300,
+      timeout: 100,
       contextObservable: scene.onBeforeRenderObservable,
       breakCondition: () => {
         // this will check if we need to break before the timeout has reached
@@ -111,7 +111,7 @@ const rollDiceIns = async (instance: InstancedMesh) => {
       onEnded: async () => {
         let stopFlag = true;
         const velocity = ins?.physicsImpostor?.getAngularVelocity() as Vector3;
-        console.log(velocity);
+        //  console.log(velocity);
         velocity._x = Math.abs(velocity._x % Math.PI);
         velocity._y = Math.abs(velocity._y % Math.PI);
         velocity._z = Math.abs(velocity._z % Math.PI);
