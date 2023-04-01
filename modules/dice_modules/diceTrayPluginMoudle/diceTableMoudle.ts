@@ -31,7 +31,7 @@ const createScene = async function (engine: BABYLON.Engine) {
   ground.physicsImpostor = new BABYLON.PhysicsImpostor(
     ground,
     BABYLON.PhysicsImpostor.BoxImpostor,
-    { mass: 0, friction: 0.5, restitution: 0.7 },
+    { mass: 0, friction: 1, restitution: 0 },
     scene
   );
   console.log(scene);

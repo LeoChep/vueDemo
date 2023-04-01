@@ -70,6 +70,7 @@ class DiceTrayPlugin implements DicesPlugin {
     dice.resultValue = resultValue as Promise<number>;
     dice.resultValue.then((result) => {
       dice.proxy.value = result;
+      console.log("骰子停下");
     });
     //监听骰子物理实体的实时数值
     diceMesh.metadata = subscribe(diceMesh.metadata, "rollNum", () => {
