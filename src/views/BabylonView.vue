@@ -88,7 +88,7 @@ onMounted(async () => {
   //   result.value = await dice.resultValue;
   //   return dice;
   // };
-  Roller.dicesplugin = diceTrayPlugin;
+  Roller.dicesplugin = new MathDicePlugin();
   let roller = new Roller();
   rollDices = async () => {
     roller.proxy = roller;
@@ -118,25 +118,10 @@ onMounted(async () => {
   };
   const diceCommander = new DiceCommander();
   rollCommand = async () => {
-    // diceTrayPlugin.cleanDices();
-    diceCommander.excute(dicesFormula.value);
-    // const formulaNode = parseDiceFormula(dicesFormula.value);
-    // const rollDice = (formula: Formula) => {
-    //   for (const formulaItem of formula.children) {
-    //     if (formulaItem.type === "formula") rollDice(formulaItem);
-    //     if (formulaItem.type === "diceFormula") {
-    //       const diceFormulaItem = formulaItem as DiceFormula;
-    //       diceFormulaItem.diceRoller = new Roller();
-    //       let diceRoller = diceFormulaItem.diceRoller as Roller;
-    //       diceRoller = subscribe(diceRoller, "value", () => {
-    //         resultDetail.value =
-    //           formulaNode.toString() + "=" + formulaNode.getValue();
-    //       });
-    //       diceRoller.rollXdY(formulaItem.text);
-    //     }
-    //   }
-    // };
-    // rollDice(formulaNode);
+    const command = diceCommander.excute(dicesFormula.value);
+    subscribe(command, "value", () => {
+      resultDetail.value = command.value;
+    });
   };
 });
 </script>

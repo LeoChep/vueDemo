@@ -24,8 +24,9 @@ class Roller {
   //根据骰子类型就行异步投掷，返回生成的骰子
   async roll(diceType: string): Promise<Dice> {
     const dicePromise = Roller.dicesplugin.roll(diceType);
-    this.proxy.dices.push(dicePromise);
     let dice = await dicePromise;
+    this.proxy.dices.push(dice);
+
     this.value = 0;
     for (const item of this.dices) {
       this.proxy.value += (await item).getValue();

@@ -6,8 +6,10 @@ class DiceCommander {
   constructor() {
     this.conmandQueue = new DiceCommandQueue();
   }
-  excute(command: string) {
-    this.conmandQueue.push(new DiceCommand(command));
+  excute(input: string) {
+    const command = new DiceCommand(input);
+    this.conmandQueue.push(command);
+    return command;
   }
 }
 export { DiceCommander };

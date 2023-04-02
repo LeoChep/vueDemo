@@ -9,9 +9,9 @@ import { Roller } from "../rollerMoudle";
 class DiceCommand {
   command: string;
   formula!: Formula;
+  proxy = this;
   value = "";
   excute(): Promise<any> {
-    this.formula = parseDiceFormula(this.command);
     const resultPromise = [] as Promise<any>[];
     Roller.dicesplugin.cleanDices();
     const rollDice = async (formula: Formula) => {
@@ -22,11 +22,12 @@ class DiceCommand {
           diceFormulaItem.diceRoller = new Roller();
           let diceRoller = diceFormulaItem.diceRoller as Roller;
           diceRoller = subscribe(diceRoller, "value", () => {
-            this.value =
+            this.proxy.value =
               this.formula.toString() + "=" + this.formula.getValue();
           });
           await diceRoller.rollXdY(formulaItem.text);
           resultPromise.push(diceRoller.getResult());
+          console.log(diceRoller);
         }
       }
       return Promise.all(resultPromise);
@@ -35,6 +36,7 @@ class DiceCommand {
   }
   constructor(conmand: string) {
     this.command = conmand;
+    this.formula = parseDiceFormula(this.command);
   }
   state = state.wait;
 }
