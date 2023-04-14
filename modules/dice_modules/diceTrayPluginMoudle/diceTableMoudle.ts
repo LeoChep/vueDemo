@@ -2,7 +2,7 @@ import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 import "@babylonjs/loaders";
 import type { Mesh, Scene } from "@babylonjs/core";
 import "@babylonjs/procedural-textures";
-import * as AmmoMoudle from "@/ammo/Ammo";
+import * as AmmoMoudle from "@plugin/ammo/Ammo";
 const createScene = async function (engine: BABYLON.Engine) {
   const ammo = await AmmoMoudle.getInstanse();
 
