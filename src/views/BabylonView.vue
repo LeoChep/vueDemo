@@ -57,7 +57,7 @@ import {
 import { DiceCommander } from "@plugin/dice_modules/dices/commandMoudle/DiceCommander";
 const result = ref(0);
 const resultDetail = ref("");
-const dicesFormula = ref("");
+const dicesFormula = ref();
 let rollCommand = async () => {
   console.log("未加载方法");
 };
@@ -88,7 +88,7 @@ onMounted(async () => {
   //   result.value = await dice.resultValue;
   //   return dice;
   // };
-  Roller.dicesplugin = new MathDicePlugin();
+  Roller.dicesplugin = diceTrayPlugin;
   let roller = new Roller();
   rollDices = async () => {
     roller.proxy = roller;
